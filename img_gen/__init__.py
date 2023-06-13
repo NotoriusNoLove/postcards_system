@@ -1,1 +1,1 @@
-from modify import *
+from modify import draw_image

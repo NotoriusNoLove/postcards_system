@@ -12,6 +12,10 @@ pillow = "^9.5.0"
 install = "^1.3.5"
 aiogram = {url = "https://github.com/aiogram/aiogram/archive/refs/heads/dev-3.x.zip"}
 python-dotenv = "^1.0.0"
+aioschedule = "^0.5.2"
+psycopg2 = "^2.9.6"
+apscheduler = "^3.10.1"
+openai = "^0.27.8"
 
 
 [build-system]
