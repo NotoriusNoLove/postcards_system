@@ -1,13 +1,15 @@
+import random
+choice = [1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,16]
 
 
-
-def create_message(name, group, date, compliment, stage, *args,**kwargs):
+def create_message(name, group, date, compliment, stage, other=None,*args,**kwargs):
+    choice_ = random.choice(choice)
     match stage:
 
         case "basic":
             return (f""" 
 <b>👨‍🎓 Имя:</b> <code>{name}</code>
-<b>📅 Дата рождения:</b> <code>{date} </code>
+<b>📅 Дата рождения:</b> <code>{date.strftime("%d.%m")} </code>
 <b>🗽 Группа:</b> <code>{group} </code>
 
 <b>🎂 Поздравление:</b> <code>{compliment}</code>
@@ -18,7 +20,7 @@ def create_message(name, group, date, compliment, stage, *args,**kwargs):
 <b>❌ Отменено </b> <s>
 
 <b>👨‍🎓 Имя:</b> {name}
-<b>📅 Дата рождения:</b> {date} 
+<b>📅 Дата рождения:</b> {date.strftime("%d.%m")} 
 <b>🗽 Группа:</b> {group} 
 
 <b>🎂 Поздравление: </b> С днем рождения, Данил! В этот день в 1948 году родился комикс "Супермен" - пусть и ты раскроешь свою суперсилу! </s>
@@ -28,7 +30,7 @@ def create_message(name, group, date, compliment, stage, *args,**kwargs):
 
             return (f""" 
 <b>👨‍🎓 Имя:</b> <code>{name}</code>
-<b>📅 Дата рождения:</b> <code>{date} </code>
+<b>📅 Дата рождения:</b> <code>{date.strftime("%d.%m")} </code>
 <b>🗽 Группа:</b> <code>{group} </code>
 
 <b>📝 Введите текст:</b>
@@ -41,3 +43,12 @@ def create_message(name, group, date, compliment, stage, *args,**kwargs):
 
 <b>🎂 Поздравление: С днем рождения, Данил! В этот день в 1948 году родился комикс "Супермен" - пусть и ты раскроешь свою суперсилу!</b>
     """)
+        case "regenerate":
+            return (f""" 
+<b>👨‍🎓 Имя:</b> <code>{name}</code>
+<b>📅 Дата рождения:</b> <code>{date.strftime("%d.%m")} </code>
+<b>🗽 Группа:</b> <code>{group} </code>
+
+<b>🎂 Поздравление:</b> <code>{compliment} + {choice_}</code> 
+    """)
+

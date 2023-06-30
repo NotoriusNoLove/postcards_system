@@ -3,6 +3,9 @@ __all__ = ['draw_image', 'calculate_font_size']
 import random
 from PIL import Image, ImageDraw, ImageFont
 
+from os import listdir
+from os.path import isfile, join
+
 
 def calculate_font_size(text: str, font_path: str, column_width: int) -> int:
     font_size = 1
@@ -17,13 +20,18 @@ def calculate_font_size(text: str, font_path: str, column_width: int) -> int:
 
 
 def draw_image(text_img: str, shad: str) -> str:
-    front = 'D:\Projects\postcards_system\storage\core\pixelfont_7.ttf'
+
+    # take list all files of a directory
+    only_files = [f for f in listdir(r'D:\Projects\python\postcards_system\storage\arts') if isfile(
+        join(r'D:\Projects\python\postcards_system\storage\arts', f))]
+
+    front = 'D:\Projects\python\postcards_system\storage\core\pixelfont_7.ttf'
     image = Image.open(
-        r'D:\Projects\postcards_system\storage\core\only_text.png')
+        r'D:\Projects\python\postcards_system\storage\core\only_text.png')
     font = ImageFont.truetype(
         front, calculate_font_size(text_img, front, 1000))
     inserted_image = Image.open(
-        r"D:\Projects\postcards_system\storage\arts\cat.png")
+        fr"D:\Projects\python\postcards_system\storage\arts\{random.choice(only_files)}")
 
     width, height = image.size
     text_bbox = ImageDraw.Draw(image).textbbox((0, 0), text_img, font=font)
@@ -51,7 +59,7 @@ def draw_image(text_img: str, shad: str) -> str:
         front, calculate_font_size(text_img, front, 1000)//2)
     draw.text((text_x+350, text_y+150), shad, fill=(255, 255, 255), font=font)
 
-    result_path = fr'D:/Projects/postcards_system/storage/temp/image_{text_img}.jpg'
+    result_path = fr'D:/Projects/python/postcards_system/storage/temp/image_{text_img}.jpg'
     image.save(result_path)
     return result_path
 

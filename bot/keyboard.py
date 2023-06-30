@@ -29,3 +29,12 @@ def make_keyboard_with_cancel(id, **kwargs):
     ]
     keyboard = InlineKeyboardMarkup(inline_keyboard=buttons)
     return keyboard
+
+
+def make_keyboard_back(id, **kwargs):
+    buttons = [
+        [InlineKeyboardButton(
+            text="⬅ Назад", callback_data=TestCallbackData(id=id, event='recover', **kwargs).pack())]
+    ]
+    keyboard = InlineKeyboardMarkup(inline_keyboard=buttons)
+    return keyboard

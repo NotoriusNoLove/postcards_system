@@ -16,15 +16,14 @@ async def create_task():
 
 async def send_message_birth(**kwargs):
     text = " ".join((kwargs.get("name").split())[0:2])
-    text = 'Данила Гинда'
     group = kwargs.get("group")
     await bot.send_photo(
-        # photo = FSInputFile(r"D:\Projects\postcards_system\storage\temp\image_Данила Гинда.jpg"),
         photo=FSInputFile(modify.draw_image(text_img=text, shad=group)),
         chat_id="-1001951834621",
-        caption=create_message(stage="show", **kwargs),
+        caption=create_message(stage="basic", **kwargs),
         reply_markup=make_keyboard(**kwargs),
         parse_mode="HTML"
+
     )
 
 
@@ -37,9 +36,27 @@ async def check_and_send():  # test (+ INTERVAL '1 day)
                 )
     result = cur.fetchall()
     if len(result) == 0:
+        print("No tasks")
         return
-    # TODO: нужно сделать функцию для подготовки текста
     for item in result:
-        if item[-1] == False:
-            continue
         await send_message_birth(id=item[0], name=item[1], group=item[2], compliment=item[3], date=item[4])
+
+
+async def send_postcard():
+    cur.execute("""
+    SELECT *
+    FROM tasks
+    WHERE TO_CHAR(send_date, 'MM-DD') = TO_CHAR(CURRENT_DATE  + INTERVAL '1 day', 'MM-DD')
+    """
+                )
+    result = cur.fetchall()
+    if result is None:
+        return
+    for item in result:
+        await bot.send_photo(
+            photo=FSInputFile(modify.draw_image(
+                text_img=" ".join((item[1].split())[0:2]), shad=item[2])),
+            chat_id=group_id[item[2]],
+            caption=item[3],
+            parse_mode="HTML"
+        )

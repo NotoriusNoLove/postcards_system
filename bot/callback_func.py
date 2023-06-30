@@ -5,9 +5,18 @@ from aiogram.fsm.context import FSMContext
 from aiogram.types import Message
 from callback_datafactory import TestCallbackData
 from db import conn, cur
-from keyboard import make_keyboard, make_keyboard_with_cancel
+from keyboard import make_keyboard, make_keyboard_with_cancel, make_keyboard_back
 from create_message import create_message
 from dispatcher import bot
+
+
+form_router = Router()
+
+
+class Form(StatesGroup):
+    begin = State()
+    end = State()
+    base = State()
 
 
 async def regeneration_callback(call: types.CallbackQuery, callback_data: TestCallbackData):
@@ -27,13 +36,14 @@ async def regeneration_callback(call: types.CallbackQuery, callback_data: TestCa
     result = cur.fetchone()
     await call.message.edit_caption(
         caption=create_message(
-            name=result[1], group=result[2], compliment=result[3], date=result[4], stage="basic"
+            name=result[1], group=result[2], compliment=result[3], date=result[4], stage="regenerate"
         ),
         reply_markup=make_keyboard(result[0])
     )
 
 
-async def cancel_callback(call: types.CallbackQuery, callback_data: TestCallbackData):
+async def cancel_callback(call: types.CallbackQuery, callback_data: TestCallbackData, state: FSMContext):
+
     # меняем submit на false
     cur.execute(
         f"""UPDATE tasks
@@ -55,7 +65,9 @@ async def cancel_callback(call: types.CallbackQuery, callback_data: TestCallback
     )
 
 
-async def recover_callback(call: types.CallbackQuery, callback_data: TestCallbackData):
+async def recover_callback(call: types.CallbackQuery, callback_data: TestCallbackData, state: FSMContext):
+    print(state.get_state())
+    await state.set_state(Form.end)
     # меняем submit на true
     cur.execute(
         f"""UPDATE tasks
@@ -75,27 +87,42 @@ async def recover_callback(call: types.CallbackQuery, callback_data: TestCallbac
         reply_markup=make_keyboard(id=result[0])
     )
 
-form_router = Router()
-
-
-class Form(StatesGroup):
-    begin = State()
-    end = State()
-
 
 async def custom_text_callback(call: types.CallbackQuery, callback_data: TestCallbackData, state: FSMContext):
     cur.execute(
         f"""select * from tasks
             where id = {callback_data.id}"""
     )
+
+    # global
+    global result
     result = cur.fetchone()
+    global callback_global
+    callback_global = callback_data
+    global msg
+    msg = call
+
     await call.message.edit_caption(
         caption=create_message(
-            name=result[1], group=result[2], compliment=result[3], date=result[4], stage="custom")
+            name=result[1], group=result[2], compliment=result[3], date=result[4], stage="custom"),
+        reply_markup=make_keyboard_back(id=result[0])
     )
     await state.set_state(Form.begin)
 
 
 @form_router.message(Form.begin)
 async def begin(message: Message, state: FSMContext):
-    await bot.send_message(message.from_user.id, 'Привет')
+    cur.execute(
+        f"""UPDATE tasks
+        SET text_birth = {message.text}
+        WHERE id = {callback_global.id}
+        """
+    )
+    await msg.message.edit_caption(
+        caption=create_message(
+            name=result[1], group=result[2], compliment=message.text, date=result[4], stage="basic"),
+        reply_markup=make_keyboard(id=result[0])
+    )
+    await message.delete()
+    await state.clear()
+    # del msg, result, callback_global
