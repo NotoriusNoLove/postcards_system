@@ -46,7 +46,7 @@ async def send_postcard():
     cur.execute("""
     SELECT *
     FROM tasks
-    WHERE TO_CHAR(send_date, 'MM-DD') = TO_CHAR(CURRENT_DATE  + INTERVAL '1 day', 'MM-DD')
+    WHERE TO_CHAR(send_date, 'MM-DD') = TO_CHAR(CURRENT_DATE  + INTERVAL '1 day', 'MM-DD') and submit = true
     """
                 )
     result = cur.fetchall()

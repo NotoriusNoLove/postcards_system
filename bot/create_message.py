@@ -5,7 +5,6 @@ choice = [1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,16]
 def create_message(name, group, date, compliment, stage, other=None,*args,**kwargs):
     choice_ = random.choice(choice)
     match stage:
-
         case "basic":
             return (f""" 
 <b>👨‍🎓 Имя:</b> <code>{name}</code>
@@ -14,7 +13,6 @@ def create_message(name, group, date, compliment, stage, other=None,*args,**kwar
 
 <b>🎂 Поздравление:</b> <code>{compliment}</code>
     """)
-
         case "cancel":
             return (f"""
 <b>❌ Отменено </b> <s>
@@ -23,7 +21,7 @@ def create_message(name, group, date, compliment, stage, other=None,*args,**kwar
 <b>📅 Дата рождения:</b> {date.strftime("%d.%m")} 
 <b>🗽 Группа:</b> {group} 
 
-<b>🎂 Поздравление: </b> С днем рождения, Данил! В этот день в 1948 году родился комикс "Супермен" - пусть и ты раскроешь свою суперсилу! </s>
+<b>🎂 Поздравление: {compliment}</s>
     """)
 
         case "custom":

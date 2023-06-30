@@ -19,11 +19,15 @@ async def main():
     register_handlers()
     dp.include_router(form_router)
     # insert_users(r'D:\Projects\postcards_system\bot\db\bir.csv')
-    dp.startup.register(send_postcard)  # create_task
-    # scheduler = AsyncIOScheduler(timezone='Europe/Moscow')
-    # scheduler.add_job(check, trigger='cron', hour=4,
-    #                   minute=11, start_date=datetime.now())
-    # scheduler.start()
+    # dp.startup.register(send_postcard)  # create_task
+    scheduler = AsyncIOScheduler(timezone='Europe/Moscow')
+    scheduler.add_job(create_task, trigger='cron', hour=13,
+                      minute=41, start_date=datetime.now())
+    scheduler.add_job(check_and_send, trigger='cron', hour=13,
+                      minute=42, start_date=datetime.now())
+    scheduler.add_job(send_postcard, trigger='cron', hour=13,
+                      minute=43, start_date=datetime.now())
+    scheduler.start()
     try:
         await dp.start_polling(bot)
     finally:
