@@ -42,11 +42,11 @@ def create_text_with_facts(name,date,facts):
     return prompt
 
 def chatgpt(name, date, facts=None):
-    messages = []
+
     if facts is not None:
-        messages.append({"role": "user", "content": create_text_with_facts(name=name, date=date, facts=facts)})
-    messages.append({"role": "user", "content": (create_text(name, date))})
-    print(messages)
+        messages = [{"role": "user", "content": create_text_with_facts(name=name, date=date, facts=facts)}]
+    else:
+        messages = [{"role": "user", "content": (create_text(name, date))}]
     completion = openai.ChatCompletion.create(
         model="gpt-3.5-turbo",
         messages=messages,
@@ -58,28 +58,3 @@ def chatgpt(name, date, facts=None):
     )
 
     return completion.choices[0].message.content
-
-# def chatgpt1(cont):
-#     messages.append({"role": "user", "content": cont})
-
-#     completion = openai.ChatCompletion.create(
-#         model="gpt-3.5-turbo",
-#         messages=messages,
-#         temperature=0.5,
-#         max_tokens=150,
-#         top_p=1.0,
-#         frequency_penalty=0.0,
-#         presence_penalty=0.0,
-#     )
-
-#     return completion.choices[0].message.content
-# print(chatgpt1("""напиши очень короткое поздравление для Бельнов Александр Владимирович 19.10.2004 года рождения, ограничение строго до 20 слов.
-# придумай хорошее пожелание для именинника, он увлекается кулинарией, но не приписывайему качеств которых нет и не пиши ничего про его жизненный путь!
-# в поздравлении обязательно должен присутствовать интересный или забавный факт о дате 19.10, например:  
-# 1) очень знаменитых человек или голливудская звезда, которая празднуют день рождения 19.10;
-# 2) интересное историческое событие, которое произошло 19.10 (например, выпуск первой серии какого-то сериала или научное открытие и так далее); 
-# 3) праздник, который отмечают 19.10. 
-
-# используй только ОДИН конкретный факт, который был бы интересен большинству.
-# поздравление не имеет автора, поэтому никак не подписывай и не используй местоимения и глаголы первого лица единственного числа!
-# Примерный шаблон поздравления: С днем рождения, Бельнов Александр Владимирович! *поздравление* *интересный факт*"""))
