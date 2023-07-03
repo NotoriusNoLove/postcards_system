@@ -27,7 +27,7 @@ async def send_message_birth(**kwargs):
     )
 
 
-async def check_and_send():  # test (+ INTERVAL '1 day)
+async def check_and_send():  # test (+ INTERVAL '1 day)'
     cur.execute("""
     SELECT *
     FROM tasks

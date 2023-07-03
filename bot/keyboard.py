@@ -9,14 +9,16 @@ from create_message import create_message
 
 def make_keyboard(id, **kwargs):
     buttons = [
-        [
-            InlineKeyboardButton(
-                text="🔄 Перегенерировать", callback_data=TestCallbackData(id=id, event='reg').pack()),
-            InlineKeyboardButton(text="❌ Отменить",
-                                 callback_data=TestCallbackData(id=id, event='cancel').pack())
-        ],
         [InlineKeyboardButton(
-            text="✏️ Свой текст", callback_data=TestCallbackData(id=id, event='custom_text').pack())]
+            text="🔄 Перегенерировать", callback_data=TestCallbackData(id=id, event='reg').pack()),
+            InlineKeyboardButton(text="❌ Отменить", callback_data=TestCallbackData(
+                id=id, event='cancel').pack())
+         ],
+        [InlineKeyboardButton(
+            text="✏️ Свой текст", callback_data=TestCallbackData(id=id, event='custom_text').pack())],
+        [InlineKeyboardButton(
+            text="➕ Добавить факты", callback_data=TestCallbackData(id=id, event='add_facts').pack()),
+            InlineKeyboardButton(text="↔ Выбрать арт", callback_data=TestCallbackData(id=id, event='cancel').pack())]
     ]
     keyboard = InlineKeyboardMarkup(inline_keyboard=buttons)
     return keyboard

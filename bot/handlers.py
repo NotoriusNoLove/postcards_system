@@ -3,7 +3,6 @@ from dispatcher import dp
 from callback_func import *
 from callback_datafactory import TestCallbackData
 from aiogram import F
-from aiogram.filters import StateFilter
 
 
 def register_handlers():
@@ -16,3 +15,5 @@ def register_handlers():
         recover_callback, TestCallbackData.filter(F.event == "recover"))
     dp.callback_query.register(
         custom_text_callback, TestCallbackData.filter(F.event == "custom_text"))
+    dp.callback_query.register(
+        add_facts, TestCallbackData.filter(F.event == "add_facts"))

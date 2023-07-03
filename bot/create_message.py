@@ -1,9 +1,8 @@
 import random
-choice = [1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,16]
+from chatgpt import *
 
 
-def create_message(name, group, date, compliment, stage, other=None,*args,**kwargs):
-    choice_ = random.choice(choice)
+def create_message(name, group, date, compliment, stage, facts=None,*args,**kwargs):
     match stage:
         case "basic":
             return (f""" 
@@ -21,7 +20,7 @@ def create_message(name, group, date, compliment, stage, other=None,*args,**kwar
 <b>📅 Дата рождения:</b> {date.strftime("%d.%m")} 
 <b>🗽 Группа:</b> {group} 
 
-<b>🎂 Поздравление: {compliment}</s>
+<b>🎂 Поздравление: {compliment} </b> </s>
     """)
 
         case "custom":
@@ -33,6 +32,16 @@ def create_message(name, group, date, compliment, stage, other=None,*args,**kwar
 
 <b>📝 Введите текст:</b>
     """)
+
+        case "facts":
+            return (f""" 
+<b>👨‍🎓 Имя:</b> <code>{name}</code>
+<b>📅 Дата рождения:</b> <code>{date.strftime("%d.%m")} </code>
+<b>🗽 Группа:</b> <code>{group} </code>
+
+<b>📝 Введите факты в формате: "любит кошек, любит поесть": </b>
+    """)
+
         case "show":
             return (f""" 
 <b>👨‍🎓 Имя:</b> <code>Данила Гинда Александрович</code>
@@ -47,9 +56,13 @@ def create_message(name, group, date, compliment, stage, other=None,*args,**kwar
 <b>📅 Дата рождения:</b> <code>{date.strftime("%d.%m")} </code>
 <b>🗽 Группа:</b> <code>{group} </code>
 
-<b>🎂 Поздравление:</b> <code>{compliment} + {choice_}</code> 
+<b>🎂 Поздравление:</b> <code>{chatgpt(name=name, date=date)}</code> 
     """)
+        case "regenerate_with_facts":
+            return (f""" 
+<b>👨‍🎓 Имя:</b> <code>{name}</code>
+<b>📅 Дата рождения:</b> <code>{date.strftime("%d.%m")} </code>
+<b>🗽 Группа:</b> <code>{group} </code>
 
-
-
-# def create_promt(name, date)
+<b>🎂 Поздравление:</b> <code>{compliment}</code> 
+    """)

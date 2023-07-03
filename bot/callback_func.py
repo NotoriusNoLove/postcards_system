@@ -8,7 +8,7 @@ from db import conn, cur
 from keyboard import make_keyboard, make_keyboard_with_cancel, make_keyboard_back
 from create_message import create_message
 from dispatcher import bot
-
+from chatgpt import *
 
 form_router = Router()
 
@@ -17,6 +17,7 @@ class Form(StatesGroup):
     begin = State()
     end = State()
     base = State()
+    facts = State()
 
 
 async def regeneration_callback(call: types.CallbackQuery, callback_data: TestCallbackData):
@@ -66,7 +67,6 @@ async def cancel_callback(call: types.CallbackQuery, callback_data: TestCallback
 
 
 async def recover_callback(call: types.CallbackQuery, callback_data: TestCallbackData, state: FSMContext):
-    print(state.get_state())
     await state.set_state(Form.end)
     # меняем submit на true
     cur.execute(
@@ -114,10 +114,11 @@ async def custom_text_callback(call: types.CallbackQuery, callback_data: TestCal
 async def begin(message: Message, state: FSMContext):
     cur.execute(
         f"""UPDATE tasks
-        SET text_birth = {message.text}
+        SET text_birth = '{message.text}'
         WHERE id = {callback_global.id}
         """
     )
+    conn.commit()
     await msg.message.edit_caption(
         caption=create_message(
             name=result[1], group=result[2], compliment=message.text, date=result[4], stage="basic"),
@@ -125,4 +126,47 @@ async def begin(message: Message, state: FSMContext):
     )
     await message.delete()
     await state.clear()
+    return
     # del msg, result, callback_global
+
+
+# add facts
+async def add_facts(call: types.CallbackQuery, callback_data: TestCallbackData, state: FSMContext):
+    cur.execute(
+        f"""select * from tasks
+            where id = {callback_data.id}"""
+    )
+
+    # global
+    global result
+    result = cur.fetchone()
+    global callback_global
+    callback_global = callback_data
+    global msg
+    msg = call
+
+    await call.message.edit_caption(
+        caption=create_message(
+            name=result[1], group=result[2], compliment=result[3], date=result[4], stage="facts"),
+        reply_markup=make_keyboard_back(id=result[0])
+    )
+    await state.set_state(Form.facts)
+
+
+@form_router.message(Form.facts)
+async def begin(message: Message, state: FSMContext):
+    comp = chatgpt(name=result[1], date=result[4], facts=message.text)
+    print(comp)
+    cur.execute(
+        f"""UPDATE tasks
+        SET text_birth = '{comp}'
+        WHERE id = {callback_global.id}
+        """
+    )
+    await msg.message.edit_caption(
+        caption=create_message(
+            name=result[1], group=result[2], compliment=comp, date=result[4], stage="regenerate_with_facts"),
+        reply_markup=make_keyboard(id=result[0])
+    )
+    await message.delete()
+    await state.clear()

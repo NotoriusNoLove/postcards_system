@@ -10,6 +10,8 @@ DB_PASSWORD = os.getenv('PASSWORD')
 DB_NAME = os.getenv('DBNAME')
 HOST = os.getenv('HOST')
 PORT = os.getenv('PORT')
+GPT = os.getenv('GPT_TOKEN')
+
 
 group_id = {
     "ШАД-112": "-1001951834621",
