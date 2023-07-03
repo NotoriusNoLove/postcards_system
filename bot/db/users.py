@@ -1,5 +1,6 @@
 from db import conn, cur
 from datetime import datetime, timedelta
+from chatgpt import *
 
 
 def create_table():
@@ -22,7 +23,7 @@ def create_table():
 
 def insert_task(package: list):
     for item in package:
-        text_birth = "TEST TEXT(replace to chatgpt_text)"
+        text_birth = chatgpt(item[0], item[2])
         send_date = datetime.now() + timedelta(days=1)
         query = """
         INSERT INTO tasks (name, group_id, text_birth, send_date) VALUES (%s, %s, %s, %s)
@@ -54,7 +55,7 @@ def get_users_birthday():
 
 def test():
     cur.execute("""
-    SELECT name, group_id
+    SELECT *
     FROM people
     WHERE TO_CHAR(birthday, 'MM-DD') = '03-01'
     """

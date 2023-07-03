@@ -19,7 +19,7 @@ async def main():
     register_handlers()
     dp.include_router(form_router)
     # insert_users(r'D:\Projects\postcards_system\bot\db\bir.csv')
-    # dp.startup.register(send_postcard)  # create_task
+    dp.startup.register(send_postcard)  # create_task
     scheduler = AsyncIOScheduler(timezone='Europe/Moscow')
     scheduler.add_job(create_task, trigger='cron', hour=13,
                       minute=41, start_date=datetime.now())

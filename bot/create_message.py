@@ -50,3 +50,6 @@ def create_message(name, group, date, compliment, stage, other=None,*args,**kwar
 <b>🎂 Поздравление:</b> <code>{compliment} + {choice_}</code> 
     """)
 
+
+
+# def create_promt(name, date)
